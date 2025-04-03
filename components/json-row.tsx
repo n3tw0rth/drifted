@@ -1,4 +1,4 @@
-import { Asterisk, CheckIcon, ChevronDown, ChevronRight, Frown } from "lucide-react"
+import { Asterisk, ChevronDown, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { Badge } from "./ui/badge"
 

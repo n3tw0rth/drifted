@@ -7,9 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
-  title: "JSON Viewer",
-  description: "Modern JSON data viewer",
-    generator: 'v0.dev'
+  title: "Drifted - Visualize drifted terraform state",
+  description: "Visualize Terraform state safely on the client side. No remote access, no secret exposure, just a secure way to inspect your infrastructure.",
 }
 
 export default function RootLayout({
@@ -20,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" type="image/png" href="/asterisk.png" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"

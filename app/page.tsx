@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp } from "lucide-react"
+import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -76,11 +76,13 @@ export default function Home() {
       <div className="container mx-auto py-10 px-4">
         <div className="flex flex-col items-center justify-center space-y-6 mb-10">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold tracking-tight">Visualize Terraform State</h1>
+            <h1 className="text-3xl font-bold tracking-tight flex -ml-5">
+              <Asterisk className="text-green-400" />
+              Drifted</h1>
           </div>
 
-          <p className="text-muted-foreground text-center max-w-md">
-            Upload a JSON file to view resource changes
+          <p className="text-muted-foreground text-center max-w-xl">
+            Visualize your Terraform state securely, entirely on the client side. No servers, no data exposure. Simply upload your Terraform state JSON file and explore your infrastructure safely
           </p>
 
           <div className="flex items-center gap-4">
