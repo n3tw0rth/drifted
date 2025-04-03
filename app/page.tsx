@@ -1,103 +1,187 @@
-import Image from "next/image";
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { JsonRow } from "@/components/json-row"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [resourceChanges, setResourceChanges] = useState<any[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(true)
+  const [fileName, setFileName] = useState<string | null>(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null)
+    const file = event.target.files?.[0]
+
+    if (!file) return
+
+    // Check if file is JSON
+    if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+      setError("Only JSON files are allowed")
+      return
+    }
+
+    setFileName(file.name)
+    const reader = new FileReader()
+
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string
+        const parsedData = JSON.parse(content)
+
+        // Extract resource_changes field if it exists
+        if (parsedData.resource_changes && Array.isArray(parsedData.resource_changes)) {
+          setResourceChanges(parsedData.resource_changes)
+        } else if (Array.isArray(parsedData)) {
+          // If the JSON is already an array, check if items have resource_changes
+          const resourceChanges = parsedData.flatMap((item) =>
+            item.resource_changes && Array.isArray(item.resource_changes) ? item.resource_changes : [],
+          )
+
+          if (resourceChanges.length > 0) {
+            setResourceChanges(resourceChanges)
+          } else {
+            // Fallback to the original data if no resource_changes found
+            setResourceChanges(parsedData)
+            setError("No resource_changes field found. Showing all data.")
+          }
+        } else {
+          // Wrap in array if it's a single object
+          setResourceChanges([parsedData])
+          setError("No resource_changes field found. Showing all data.")
+        }
+
+        setDialogOpen(false)
+      } catch (error) {
+        setError("Invalid JSON format")
+      }
+    }
+
+    reader.onerror = () => {
+      setError("Error reading file")
+    }
+
+    reader.readAsText(file)
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <div className="container mx-auto py-10 px-4">
+        <div className="flex flex-col items-center justify-center space-y-6 mb-10">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight">Visualize Terraform State</h1>
+          </div>
+
+          <p className="text-muted-foreground text-center max-w-md">
+            Upload a JSON file to view resource changes
+          </p>
+
+          <div className="flex items-center gap-4">
+            <Button onClick={() => setDialogOpen(true)} className="flex items-center gap-2" size="lg">
+              <Upload size={16} />
+              Upload JSON
+            </Button>
+
+            {resourceChanges && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setResourceChanges(null)
+                  setFileName(null)
+                  setDialogOpen(true)
+                }}
+                size="lg"
+              >
+                <X size={16} className="mr-2" />
+                Clear Data
+              </Button>
+            )}
+          </div>
+
+          {fileName && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <FileUp size={14} />
+              <span>
+                Current file: <span className="font-mono font-medium">{fileName}</span>
+              </span>
+            </div>
+          )}
+
+          {error && (
+            <Alert variant="destructive" className="max-w-md">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        <Dialog open={dialogOpen && !resourceChanges} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Upload JSON File</DialogTitle>
+              <DialogDescription>Please upload a JSON file to view its contents</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="border-2 border-dashed rounded-lg p-10 border-muted-foreground/25 hover:border-muted-foreground/50 transition-colors cursor-pointer">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <FileJson className="h-10 w-10 text-primary" />
+                  <p className="text-sm text-muted-foreground text-center">
+                    Drag and drop your JSON file here, or click to browse
+                  </p>
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={handleFileUpload}
+                  />
+                  <Button size="sm">Select File</Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {resourceChanges && (
+          <div className="flex flex-col space-y-4 w-full max-w-4xl mx-auto">
+            <div className="bg-card rounded-lg shadow-sm border overflow-hidden">
+              <div className="bg-muted/50 px-4 py-3 border-b flex items-center justify-between">
+                <div className="font-medium">
+                  {resourceChanges.length} {resourceChanges.length === 1 ? "item" : "items"} found
+                </div>
+                <Badge variant="outline" className="font-mono text-xs">
+                  {formatBytes(JSON.stringify(resourceChanges).length)}
+                </Badge>
+              </div>
+              <div className="divide-y">
+                {resourceChanges.map((item, index) => (
+                  <JsonRow key={index} data={item} index={index} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  )
 }
+
+
+// Helper function to format bytes
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 Bytes"
+
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+}
+
