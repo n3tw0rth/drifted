@@ -10,6 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { JsonRow } from "@/components/json-row"
 import { HelpDialog } from "@/components/help-dialog"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Home() {
   const [resourceChanges, setResourceChanges] = useState<any[] | null>(null)
@@ -74,6 +75,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <ThemeToggle />
       <div className="container mx-auto py-10 px-4">
         <div className="flex flex-col items-center justify-center space-y-6 mb-10">
           <div className="flex items-center gap-3">
@@ -89,10 +91,13 @@ export default function Home() {
           </p>
 
           <div className="flex items-center gap-4">
-            <Button onClick={() => setDialogOpen(true)} className="flex items-center gap-2" size="lg">
-              <Upload size={16} />
-              Upload JSON
-            </Button>
+            {
+              !fileName &&
+              <Button onClick={() => setDialogOpen(true)} className="flex items-center gap-2" size="lg">
+                <Upload size={16} />
+                Upload JSON
+              </Button>
+            }
 
             {resourceChanges && (
               <Button

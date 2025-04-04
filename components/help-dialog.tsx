@@ -26,7 +26,7 @@ export function HelpDialog() {
               It is easy to use the tool, add the following lines to your terraform script to
               save the plan to a file and convert that to json format.
             </p>
-            <pre className="p-4 rounded-lg overflow-auto text-sm text-white">
+            <pre className="p-4 rounded-lg overflow-auto text-sm">
               <code className="language-shell">
                 terraform plan -out "tfplan"
                 {"\n"}terraform show -json "tfplan"
