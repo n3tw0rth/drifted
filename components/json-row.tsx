@@ -39,16 +39,18 @@ export function JsonRow({ data, index }: JsonRowProps) {
   return (
     <div className="w-full">
       <div
-        className="flex items-center p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+        className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="mr-2 text-muted-foreground">
-          {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-        </div>
-        <div className="font-medium truncate flex">
-          <Actions actions={data?.change?.actions} />
-          <TitleToolTip title={getTitle()}>
-          </TitleToolTip>
+        <div className="flex items-center">
+          <div className="mr-2 text-muted-foreground">
+            {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+          </div>
+          <div className="font-medium truncate flex">
+            <Actions actions={data?.change?.actions} />
+            <TitleToolTip title={getTitle()}>
+            </TitleToolTip>
+          </div>
         </div>
         {
           //<span>
