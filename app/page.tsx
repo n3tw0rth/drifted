@@ -40,26 +40,10 @@ export default function Home() {
 
         // Extract resource_changes field if it exists
         if (parsedData.resource_changes && Array.isArray(parsedData.resource_changes)) {
-          setResourceChanges(parsedData.resource_changes)
-        } else if (Array.isArray(parsedData)) {
-          // If the JSON is already an array, check if items have resource_changes
-          const resourceChanges = parsedData.flatMap((item) =>
-            item.resource_changes && Array.isArray(item.resource_changes) ? item.resource_changes : [],
-          )
-
-          if (resourceChanges.length > 0) {
-            setResourceChanges(resourceChanges)
-          } else {
-            // Fallback to the original data if no resource_changes found
-            setResourceChanges(parsedData)
-            setError("No resource_changes field found. Showing all data.")
-          }
-        } else {
-          // Wrap in array if it's a single object
-          setResourceChanges([parsedData])
-          setError("No resource_changes field found. Showing all data.")
+          // filter out resource with no-op action (resouce which are not modified)
+          const filteredResourceChanges = parsedData.resource_changes.filter((resource: any) => !(resource.change.actions as string[]).includes("no-op"))
+          setResourceChanges(filteredResourceChanges)
         }
-
         setDialogOpen(false)
       } catch (error) {
         setError("Invalid JSON format")

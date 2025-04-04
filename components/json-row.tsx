@@ -9,8 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Image from "next/image"
-import { icons } from "@/data/icons"
 
 interface JsonRowProps {
   data: any
@@ -18,6 +16,14 @@ interface JsonRowProps {
 }
 
 export function JsonRow({ data, index }: JsonRowProps) {
+  // client side code will panic when after values are null
+  // this will prevent that, but will replace by before values marked as destroying
+  if (data.change.after === null) {
+    data.change.after = {
+      destroying: true
+    }
+  }
+
   const [isExpanded, setIsExpanded] = useState(false)
 
   // Get title from the data - prioritize resource-specific fields
