@@ -3,12 +3,13 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk } from "lucide-react"
+import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk, Lightbulb, CircleHelpIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { JsonRow } from "@/components/json-row"
+import { HelpDialog } from "@/components/help-dialog"
 
 export default function Home() {
   const [resourceChanges, setResourceChanges] = useState<any[] | null>(null)
@@ -78,7 +79,9 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight flex -ml-5">
               <Asterisk className="text-green-400" />
-              Drifted</h1>
+              Drifted
+              <HelpDialog />
+            </h1>
           </div>
 
           <p className="text-muted-foreground text-center max-w-xl">
