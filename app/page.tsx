@@ -144,7 +144,7 @@ export default function Home() {
         </Dialog>
 
         {resourceChanges && (
-          <div className="flex flex-col space-y-4 w-full max-w-4xl mx-auto">
+          <div className="flex flex-col space-y-4 w-full max-w-6xl mx-auto">
             <div className="bg-card rounded-lg shadow-sm border overflow-hidden">
               <div className="bg-muted/50 px-4 py-3 border-b flex items-center justify-between">
                 <div className="font-medium">

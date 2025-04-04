@@ -37,7 +37,7 @@ export function JsonRow({ data, index }: JsonRowProps) {
   }
 
   return (
-    <div className="bg-card">
+    <div className="w-full">
       <div
         className="flex items-center p-4 cursor-pointer hover:bg-muted/30 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
