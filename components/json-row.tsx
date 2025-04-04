@@ -121,7 +121,7 @@ function Actions({ actions }: { actions: [string] }) {
         return <Asterisk key={`recreate{index}`} className="text-blue-500 -mx-1" />
       case "update":
         return <Asterisk key={`delete{index}`} className="text-yellow-500 -mx-1" />
-      case "destroy":
+      case "delete":
         return <Asterisk key={`delete{index}`} className="text-red-500 -mx-1" />
       default:
         return <Asterisk key={`non${index}`} className="text-gray-500 -mx-1" />
