@@ -156,11 +156,8 @@ export default function Home() {
             <div className="bg-card rounded-lg shadow-sm border overflow-hidden">
               <div className="bg-muted/50 px-4 py-3 border-b flex items-center justify-between">
                 <div className="font-medium">
-                  {resourceChanges.length} {resourceChanges.length === 1 ? "item" : "items"} found
+                  {resourceChanges.length} {resourceChanges.length === 1 ? "resource" : "resources"} found
                 </div>
-                <Badge variant="outline" className="font-mono text-xs">
-                  {formatBytes(JSON.stringify(resourceChanges).length)}
-                </Badge>
               </div>
               <div className="divide-y">
                 {resourceChanges.map((item, index) => (
@@ -175,15 +172,4 @@ export default function Home() {
   )
 }
 
-
-// Helper function to format bytes
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 Bytes"
-
-  const k = 1024
-  const sizes = ["Bytes", "KB", "MB", "GB"]
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-}
 

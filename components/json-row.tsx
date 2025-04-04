@@ -1,6 +1,16 @@
+"use client"
 import { Asterisk, ChevronDown, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { Badge } from "./ui/badge"
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import Image from "next/image"
+import { icons } from "@/data/icons"
 
 interface JsonRowProps {
   data: any
@@ -16,7 +26,7 @@ export function JsonRow({ data, index }: JsonRowProps) {
   }
 
   // Get resource type if available
-  const getResourceType = () => {
+  const getResourceType = (): string => {
     return data.type || "Unknown Type"
   }
 
@@ -30,8 +40,15 @@ export function JsonRow({ data, index }: JsonRowProps) {
           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
         </div>
         <div className="font-medium truncate flex">
-          <Actions actions={data.change.actions} />
-          {getTitle()}</div>
+          <Actions actions={data?.change?.actions} />
+          <TitleToolTip title={getTitle()}>
+          </TitleToolTip>
+        </div>
+        {
+          //<span>
+          //  <img src={icons[getResourceType()]} className="w-6" />
+          //</span>
+        }
         <Badge variant="outline" className="ml-2 font-mono text-xs">
           {getResourceType()}
         </Badge>
@@ -75,7 +92,10 @@ function formatJsonValue(value: any): React.ReactNode {
 
   if (Array.isArray(value)) {
     if (value.length === 0) return "[]"
-    return <span>[{value.length} items]</span>
+    //return <span>[{value.length} items]</span>
+    return <pre>
+      {JSON.stringify(value, null, 2)}
+    </pre>
   }
 
   if (typeof value === "object") {
@@ -83,7 +103,7 @@ function formatJsonValue(value: any): React.ReactNode {
     if (keys.length === 0) return "{}"
     return (
       <span>
-        {JSON.stringify(value)}
+        {JSON.stringify(value, null, 2)}
       </span>
     )
   }
@@ -93,16 +113,35 @@ function formatJsonValue(value: any): React.ReactNode {
 
 // this components should return a list of actions related components
 function Actions({ actions }: { actions: [string] }) {
-  const actionComponents = actions.map(action => {
+  const actionComponents = actions?.map((action, index) => {
     switch (action) {
       case "create":
-        return <Asterisk className="text-green-500" />
-      case "delete":
-        return <Asterisk className="text-red-500" />
+        return <Asterisk key={`create${index}`} className="text-green-500 -mx-1" />
+      case "recreate":
+        return <Asterisk key={`recreate{index}`} className="text-blue-500 -mx-1" />
+      case "destroy":
+        return <Asterisk key={`delete{index}`} className="text-red-500 -mx-1" />
       default:
-        return <Asterisk className="text-gray-500" />
+        return <Asterisk key={`non${index}`} className="text-gray-500 -mx-1" />
     }
   })
 
   return actionComponents
+}
+
+function TitleToolTip({ title }: { title: string }) {
+  const wrappedTitle =
+    title?.length > 50 ? title.slice(0, 50).concat("....") : title
+  return <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger className="ml-3">
+        {wrappedTitle}
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>
+          {title}
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 }
