@@ -7,10 +7,16 @@ export const ThemeToggle = () => {
   return (
     <div className='absolute w-full flex justify-end pt-4 px-5'>
       {
+        //theme === "light" ?
+        //  <button onClick={() => setTheme('dark')}><LightbulbOff /></button>
+        //  :
+        //  <button onClick={() => setTheme('light')}><Lightbulb /></button>
+
+
         theme === "light" ?
-          <button onClick={() => setTheme('dark')}><LightbulbOff /></button>
+          <button onClick={() => setTheme('dark')}>Light destroy</button>
           :
-          <button onClick={() => setTheme('light')}><Lightbulb /></button>
+          <button onClick={() => setTheme('light')}>Light apply</button>
       }
     </div >
   )
