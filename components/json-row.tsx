@@ -1,8 +1,9 @@
 "use client"
 
-import { ArrowRight, Asterisk, ChevronDown, ChevronRight, MoveRight } from "lucide-react"
+import { ArrowRight, Asterisk, ChevronDown, ChevronRight, Copy, MoveRight } from "lucide-react"
 import { ReactNode, useState } from "react"
 import { Badge } from "./ui/badge"
+import copy from "copy-to-clipboard"
 
 import {
   Tooltip,
@@ -10,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Button } from "./ui/button"
 
 interface JsonRowProps {
   data: any
@@ -47,7 +49,7 @@ export function JsonRow({ data, index, showUnchanged }: JsonRowProps) {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-auto">
       <div
         className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -68,7 +70,7 @@ export function JsonRow({ data, index, showUnchanged }: JsonRowProps) {
       </div>
 
       {isExpanded && (
-        <div className="overflow-hidden">
+        <div className="overflow-auto w-full">
           <div className="border-t px-4 py-3 bg-muted/10">
             <div className="space-y-2">
               {Object.entries(data.change.after).map(([key, value]) => (
@@ -150,19 +152,34 @@ function formatJsonValue(value: any): React.ReactNode {
 
   if (Array.isArray(value)) {
     if (value.length === 0) return "[]"
+    const jsonValue = JSON.stringify(value, null, 2)
     //return <span>[{value.length} items]</span>
-    return <pre>
-      {JSON.stringify(value, null, 2)}
-    </pre>
+    return (
+      <div className="flex flex-col">
+        <div className="w-full flex items-center justify-end">
+          <Button size={"sm"} variant={"ghost"} onClick={() => copy(jsonValue, { debug: true })}><Copy className="" /></Button>
+        </div>
+        <pre className="text-wrap">
+          {jsonValue}
+        </pre>
+      </div >
+    )
   }
 
   if (typeof value === "object") {
     const keys = Object.keys(value)
     if (keys.length === 0) return "{}"
+
+    const jsonValue = JSON.stringify(value, null, 2)
     return (
-      <span>
-        {JSON.stringify(value, null, 2)}
-      </span>
+      <div className="flex flex-col">
+        <div className="w-full flex items-center justify-end">
+          <Button size={"sm"} variant={"ghost"} onClick={() => copy(jsonValue, { debug: true })}><Copy className="" /></Button>
+        </div>
+        <pre>
+          {jsonValue}
+        </pre>
+      </div>
     )
   }
 
