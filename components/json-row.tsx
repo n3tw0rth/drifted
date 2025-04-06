@@ -14,12 +14,21 @@ import {
 interface JsonRowProps {
   data: any
   index: number
+  showUnchanged: boolean
 }
 
-export function JsonRow({ data, index }: JsonRowProps) {
+interface TransformProps {
+  fieldKey: any, data: any, value: any, showUnchanged: boolean
+}
+
+export function JsonRow({ data, index, showUnchanged }: JsonRowProps) {
   // client side code will panic when after values are null
   // this will prevent that, but will replace by before values marked as destroying
   if (data.change.after === null) {
+
+    data.change.before = {
+      destroying: null
+    }
     data.change.after = {
       destroying: true
     }
@@ -63,9 +72,7 @@ export function JsonRow({ data, index }: JsonRowProps) {
           <div className="border-t px-4 py-3 bg-muted/10">
             <div className="space-y-2">
               {Object.entries(data.change.after).map(([key, value]) => (
-                <div key={key} className="grid grid-cols-12 gap-4">
-                  <TransformBeforeandAfter fieldKey={key} data={data} value={value} />
-                </div>
+                <TransformBeforeandAfter fieldKey={key} data={data} value={value} showUnchanged={showUnchanged} />
               ))}
             </div>
           </div>
@@ -75,12 +82,11 @@ export function JsonRow({ data, index }: JsonRowProps) {
   )
 }
 
-function TransformBeforeandAfter({ fieldKey, data, value }: { fieldKey: any, data: any, value: any }): ReactNode {
-  console.log({ fieldKey })
+function TransformBeforeandAfter({ fieldKey, data, value, showUnchanged }: TransformProps): ReactNode {
   const before = findBeforeValue(data, fieldKey)
   const after = value
   // if action is create before values is null, so do not need to show the change 
-  let returnValue: ReactNode = <></>
+  let returnValue: ReactNode = null
   if (data.change.actions.includes("create")) {
     returnValue = formatJsonValue(after)
   }
@@ -91,15 +97,19 @@ function TransformBeforeandAfter({ fieldKey, data, value }: { fieldKey: any, dat
       returnValue = <span className="flex items-center">{formatJsonValue(before)}<MoveRight className="w-4 mx-2" />{formatJsonValue(after)}</span>
     }
     else {
-      // unchanged values are italic and grayscaled
-      returnValue = <span className="italic text-gray-400 grayscale">{formatJsonValue(after)}</span>
+      if (showUnchanged) {
+        // unchanged values are italic and grayscaled
+        returnValue = <span className="italic text-gray-500 grayscale">{formatJsonValue(after)}</span>
+      }
     }
   }
 
-  return <>
-    <div className="col-span-3 font-mono text-sm json-key">{fieldKey}:</div>
-    <div className="col-span-9 font-mono text-sm break-words flex items-center gap-2">{returnValue}</div>
-  </>
+  if (returnValue !== null) {
+    return <div key={fieldKey} className="grid grid-cols-12 gap-4">
+      <div className="col-span-3 font-mono text-sm json-key">{fieldKey}:</div>
+      <div className="col-span-9 font-mono text-sm break-words flex items-center gap-2">{returnValue}</div>
+    </div>
+  }
 }
 
 // Helper function to compare two formatted JSON values

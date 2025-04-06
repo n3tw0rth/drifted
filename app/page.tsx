@@ -12,13 +12,15 @@ import { HelpDialog } from "@/components/help-dialog"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Toggle } from "@/components/ui/toggle"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 export default function Home() {
   const [resourceChanges, setResourceChanges] = useState<any[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(true)
   const [fileName, setFileName] = useState<string | null>(null)
-  const [sortToggle, setSortToggle] = useState<boolean | null>(false)
+  const [showUnchanged, setShowUnchanged] = useState<boolean>(false)
 
   const sortResources = (resources: any[]) => {
     resources?.sort((a, b) => {
@@ -155,6 +157,10 @@ export default function Home() {
 
         {resourceChanges && (
           <div className="flex flex-col space-y-4 w-full max-w-6xl mx-auto">
+            <div className="flex items-center gap-2">
+              <Switch id="airplane-mode" onCheckedChange={() => setShowUnchanged(!showUnchanged)} />
+              <Label htmlFor="show-unchanged">Show unchanged</Label>
+            </div>
             <div className="bg-card rounded-lg shadow-sm border overflow-hidden">
               <div className="bg-muted/50 px-4 py-3 border-b flex items-center justify-between">
                 <div className="font-medium">
@@ -163,7 +169,7 @@ export default function Home() {
               </div>
               <div className="divide-y">
                 {resourceChanges.map((item, index) => (
-                  <JsonRow key={index} data={item} index={index} />
+                  <JsonRow key={index} data={item} index={index} showUnchanged={showUnchanged} />
                 ))}
               </div>
             </div>
