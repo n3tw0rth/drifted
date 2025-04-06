@@ -29,7 +29,7 @@ export function HelpDialog() {
             <pre className="p-4 rounded-lg overflow-auto text-sm">
               <code className="language-shell">
                 terraform plan -out "tfplan"
-                {"\n"}terraform show -json "tfplan"
+                {"\n"}terraform show -json "tfplan" &gt; plan.json
               </code>
             </pre>
             <p className="">
