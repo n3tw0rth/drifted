@@ -1,5 +1,5 @@
 "use client"
-import { Asterisk, ChevronDown, ChevronRight } from "lucide-react"
+import { ArrowRight, Asterisk, ChevronDown, ChevronRight } from "lucide-react"
 import { ReactNode, useState } from "react"
 import { Badge } from "./ui/badge"
 
@@ -68,8 +68,7 @@ export function JsonRow({ data, index }: JsonRowProps) {
             <div className="space-y-2">
               {Object.entries(data.change.after).map(([key, value]) => (
                 <div key={key} className="grid grid-cols-12 gap-4">
-                  <div className="col-span-3 font-mono text-sm json-key">{key}:</div>
-                  <div className="col-span-9 font-mono text-sm break-words">{formatJsonValue(value)}</div>
+                  <TransformBeforeandAfter key={key} data={data} value={value} />
                 </div>
               ))}
             </div>
@@ -78,6 +77,32 @@ export function JsonRow({ data, index }: JsonRowProps) {
       )}
     </div>
   )
+}
+
+function TransformBeforeandAfter({ key, data, value }: { key: string, data: any, value: any }): ReactNode {
+  // if action is create before values is null, so do not need to show the change 
+  let returnValue: ReactNode = <></>
+  if (data.change.actions.includes("create")) {
+    returnValue = formatJsonValue(value)
+  }
+  else {
+    // check if the begore  and after values are the same
+    // easiest way to do this is to compare the stringified values
+    console.log(key, value)
+    returnValue = <>{findBeforeValue(data, key)}{formatJsonValue(value)}</>
+  }
+
+  return <>
+    <div className="col-span-3 font-mono text-sm json-key">{key}:</div>
+    <div className="col-span-9 font-mono text-sm break-words flex items-center gap-2">{returnValue}</div>
+  </>
+}
+
+function findBeforeValue(data: any, key: string) {
+  if (data.change.before) {
+    return data.change.before[key]
+  }
+  return null
 }
 
 // Helper function to format JSON values with syntax highlighting
@@ -141,7 +166,7 @@ function Actions({ actions }: { actions: [string] }) {
 
 function TitleToolTip({ title }: { title: string }) {
   const wrappedTitle =
-    title?.length > 50 ? title.slice(0, 50).concat("....") : title
+    title?.length > 60 ? title.slice(0, 60).concat("....") : title
   return <TooltipProvider>
     <Tooltip>
       <TooltipTrigger className="ml-3">
