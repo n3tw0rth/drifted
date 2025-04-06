@@ -3,20 +3,29 @@
 import type React from "react"
 
 import { useEffect, useState } from "react"
-import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk, Lightbulb, CircleHelpIcon } from "lucide-react"
+import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk, Lightbulb, CircleHelpIcon, Italic, ArrowDownAz } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { JsonRow } from "@/components/json-row"
 import { HelpDialog } from "@/components/help-dialog"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Toggle } from "@/components/ui/toggle"
+import { Input } from "@/components/ui/input"
 
 export default function Home() {
   const [resourceChanges, setResourceChanges] = useState<any[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(true)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [sortToggle, setSortToggle] = useState<boolean | null>(false)
+
+  const sortResources = (resources: any[]) => {
+    resources?.sort((a, b) => {
+      return a.type > b.type ? 1 : -1
+    })
+    setResourceChanges(resources)
+  }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError(null)
@@ -42,7 +51,7 @@ export default function Home() {
         if (parsedData.resource_changes && Array.isArray(parsedData.resource_changes)) {
           // filter out resource with no-op action (resouce which are not modified)
           const filteredResourceChanges = parsedData.resource_changes.filter((resource: any) => !(resource.change.actions as string[]).includes("no-op"))
-          setResourceChanges(filteredResourceChanges)
+          sortResources(filteredResourceChanges)
         }
         setDialogOpen(false)
       } catch (error) {
@@ -56,10 +65,6 @@ export default function Home() {
 
     reader.readAsText(file)
   }
-
-  useEffect(() => {
-    console.log({ resourceChanges })
-  }, [resourceChanges])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -146,6 +151,7 @@ export default function Home() {
             </div>
           </DialogContent>
         </Dialog>
+
 
         {resourceChanges && (
           <div className="flex flex-col space-y-4 w-full max-w-6xl mx-auto">
