@@ -1,4 +1,4 @@
-import { Lightbulb, LightbulbOff } from 'lucide-react'
+import { Lightbulb, LightbulbOff, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 export const ThemeToggle = () => {
@@ -7,16 +7,12 @@ export const ThemeToggle = () => {
   return (
     <div className='absolute w-full flex justify-end pt-4 px-5'>
       {
-        //theme === "light" ?
-        //  <button onClick={() => setTheme('dark')}><LightbulbOff /></button>
-        //  :
-        //  <button onClick={() => setTheme('light')}><Lightbulb /></button>
-
-
         theme === "light" ?
-          <button onClick={() => setTheme('dark')}>Light destroy</button>
+          <button onClick={() => setTheme('dark')}><Sun /></button>
           :
-          <button onClick={() => setTheme('light')}>Light apply</button>
+          <button onClick={() => setTheme('light')}><Moon /></button>
+
+
       }
     </div >
   )

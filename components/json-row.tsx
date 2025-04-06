@@ -1,5 +1,6 @@
 "use client"
-import { ArrowRight, Asterisk, ChevronDown, ChevronRight } from "lucide-react"
+
+import { ArrowRight, Asterisk, ChevronDown, ChevronRight, MoveRight } from "lucide-react"
 import { ReactNode, useState } from "react"
 import { Badge } from "./ui/badge"
 
@@ -52,11 +53,6 @@ export function JsonRow({ data, index }: JsonRowProps) {
             </TitleToolTip>
           </div>
         </div>
-        {
-          //<span>
-          //  <img src={icons[getResourceType()]} className="w-6" />
-          //</span>
-        }
         <Badge variant="outline" className="ml-2 font-mono text-xs">
           {getResourceType()}
         </Badge>
@@ -68,7 +64,7 @@ export function JsonRow({ data, index }: JsonRowProps) {
             <div className="space-y-2">
               {Object.entries(data.change.after).map(([key, value]) => (
                 <div key={key} className="grid grid-cols-12 gap-4">
-                  <TransformBeforeandAfter key={key} data={data} value={value} />
+                  <TransformBeforeandAfter fieldKey={key} data={data} value={value} />
                 </div>
               ))}
             </div>
@@ -79,25 +75,44 @@ export function JsonRow({ data, index }: JsonRowProps) {
   )
 }
 
-function TransformBeforeandAfter({ key, data, value }: { key: string, data: any, value: any }): ReactNode {
+function TransformBeforeandAfter({ fieldKey, data, value }: { fieldKey: any, data: any, value: any }): ReactNode {
+  console.log({ fieldKey })
+  const before = findBeforeValue(data, fieldKey)
+  const after = value
   // if action is create before values is null, so do not need to show the change 
   let returnValue: ReactNode = <></>
   if (data.change.actions.includes("create")) {
-    returnValue = formatJsonValue(value)
+    returnValue = formatJsonValue(after)
   }
   else {
     // check if the begore  and after values are the same
     // easiest way to do this is to compare the stringified values
-    console.log(key, value)
-    returnValue = <>{findBeforeValue(data, key)}{formatJsonValue(value)}</>
+    if (!compareJsonValues(before, after)) {
+      returnValue = <span className="flex items-center">{formatJsonValue(before)}<MoveRight className="w-4 mx-2" />{formatJsonValue(after)}</span>
+    }
+    else {
+      // unchanged values are italic and grayscaled
+      returnValue = <span className="italic text-gray-400 grayscale">{formatJsonValue(after)}</span>
+    }
   }
 
   return <>
-    <div className="col-span-3 font-mono text-sm json-key">{key}:</div>
+    <div className="col-span-3 font-mono text-sm json-key">{fieldKey}:</div>
     <div className="col-span-9 font-mono text-sm break-words flex items-center gap-2">{returnValue}</div>
   </>
 }
 
+// Helper function to compare two formatted JSON values
+function compareJsonValues(beforeValue: any, afterValue: any): boolean {
+  console.log({ beforeValue, afterValue })
+  if (JSON.stringify(beforeValue) === JSON.stringify(afterValue)) {
+    return true
+  }
+  return false
+}
+
+// Helper function to find the before value of a field and 
+// style them using the same logic as the after value
 function findBeforeValue(data: any, key: string) {
   if (data.change.before) {
     return data.change.before[key]

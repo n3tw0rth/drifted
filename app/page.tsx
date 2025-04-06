@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Upload, FileJson, AlertCircle, ChevronDown, ChevronRight, X, FileUp, Asterisk, Lightbulb, CircleHelpIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -56,6 +56,10 @@ export default function Home() {
 
     reader.readAsText(file)
   }
+
+  useEffect(() => {
+    console.log({ resourceChanges })
+  }, [resourceChanges])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/30">
