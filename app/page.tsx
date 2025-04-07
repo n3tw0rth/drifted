@@ -20,7 +20,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(true)
   const [fileName, setFileName] = useState<string | null>(null)
-  const [showUnchanged, setShowUnchanged] = useState<boolean>(false)
+  const [showUnchanged, setShowUnchanged] = useState<boolean>(true)
 
   const sortResources = (resources: any[]) => {
     resources?.sort((a, b) => {
@@ -82,7 +82,14 @@ export default function Home() {
           </div>
 
           <p className="text-muted-foreground text-center max-w-xl">
-            Visualize your Terraform state securely, entirely on the client side. No servers, no data exposure. Simply upload your Terraform state JSON file and explore your infrastructure safely
+            Visualize your Terraform state securely, entirely on the client side. No servers, no data exposure. Simply upload your Terraform state JSON file and explore your infrastructure safely.
+
+            <Button variant={"link"}>
+              <a href="https://www.dropbox.com/scl/fi/43flzcub25p5d5imtuq4c/create-plan-stripped.json?rlkey=331cm6mgi3dkdfifd6n9izy3p&st=jr35xlor&dl=0">demo1</a>
+            </Button>
+            <Button variant={"link"}>
+              <a href="https://www.dropbox.com/scl/fi/76ub4jza6mkdogh59pwxs/update-plan-stripped.json?rlkey=015k02puj7iy24slyu9t9djhn&st=0oor1jan&dl=0">demo2</a>
+            </Button>
           </p>
 
           <div className="flex items-center gap-4">
@@ -158,7 +165,7 @@ export default function Home() {
         {resourceChanges && (
           <div className="flex flex-col space-y-4 w-full max-w-6xl mx-auto">
             <div className="flex items-center gap-2">
-              <Switch id="airplane-mode" onCheckedChange={() => setShowUnchanged(!showUnchanged)} />
+              <Switch id="airplane-mode" defaultChecked onCheckedChange={() => setShowUnchanged(!showUnchanged)} />
               <Label htmlFor="show-unchanged">Show unchanged</Label>
             </div>
             <div className="bg-card rounded-lg shadow-sm border overflow-hidden">
@@ -176,7 +183,7 @@ export default function Home() {
           </div>
         )}
       </div>
-    </main>
+    </main >
   )
 }
 
