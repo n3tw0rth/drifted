@@ -82,13 +82,13 @@ export default function Home() {
           </div>
 
           <p className="text-muted-foreground text-center max-w-xl">
-            Visualize your Terraform state securely, entirely on the client side. No servers, no data exposure. Simply upload your Terraform state JSON file and explore your infrastructure safely.
+            Visualize your Terraform state securely, entirely on the client side. No servers, no data exposure. Simply upload your Terraform state JSON file and explore your infrastructure safely. try these
 
-            <Button variant={"link"}>
-              <a href="https://www.dropbox.com/scl/fi/43flzcub25p5d5imtuq4c/create-plan-stripped.json?rlkey=331cm6mgi3dkdfifd6n9izy3p&st=jr35xlor&dl=0">demo1</a>
-            </Button>
-            <Button variant={"link"}>
-              <a href="https://www.dropbox.com/scl/fi/76ub4jza6mkdogh59pwxs/update-plan-stripped.json?rlkey=015k02puj7iy24slyu9t9djhn&st=0oor1jan&dl=0">demo2</a>
+            <Button variant={"link"} className="p-0 m-0 ml-2">
+              <a target="_blank" href="https://www.dropbox.com/scl/fi/43flzcub25p5d5imtuq4c/create-plan-stripped.json?rlkey=331cm6mgi3dkdfifd6n9izy3p&st=jr35xlor&dl=0">file1</a>
+            </Button>,
+            <Button variant={"link"} className="p-0 m-0">
+              <a target="_blank" href="https://www.dropbox.com/scl/fi/76ub4jza6mkdogh59pwxs/update-plan-stripped.json?rlkey=015k02puj7iy24slyu9t9djhn&st=0oor1jan&dl=0">file2</a>
             </Button>
           </p>
 
