@@ -1,6 +1,7 @@
 # Drifted
 A minimal alternative to how terraform cloud visualize changes. 
 <br/>
+<br/>
 _This project wasn’t originally intended to be public. It’s a simple and quick implementation done in under 10 hours. But since many people requested it, I’ve made the repository public_
 <br/>
 <br/>
